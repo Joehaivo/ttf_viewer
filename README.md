@@ -43,9 +43,11 @@
 
 ## 3. 应用下载
 
-- [web example](http://150.158.144.198:8899/)
+- [web在线示例网站](http://150.158.144.198:8899/)
 
-- [release](https://github.com/Joehaivo/ttf_viewer/releases)
+- [release下载页](https://github.com/Joehaivo/ttf_viewer/releases)
+
+- [ttf示例文件](doc/iconfont.ttf)
 
 ## 4. 编译运行
 
