@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       translations: I18nValue(),
-      locale: const Locale('zh', 'CN'),
+      locale: Get.deviceLocale?.languageCode == 'zh' ? const Locale('zh', 'CN') : const Locale('en', 'US'),
       fallbackLocale: const Locale('en', 'US'),
       title: "TTF Viewer",
       theme: ThemeData(

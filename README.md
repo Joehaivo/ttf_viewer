@@ -6,12 +6,13 @@
 
 ## 1. Feature
 
-- Supported browse icons through drag and drop TTF file into the application window, also supported batch drag and drop. (Except mobile phone)
-- Supported to open multiple font files at the same time.
-- Supported to search icon by icon name (glyphName).
-- Supported copy all glyph code (JSON format) to clipborad, convenient to your programming.
-- Supported change icon color.
-- Supported multi-platform:
+- Support browse icons through drag and drop TTF file into the application window, also supported batch drag and drop. (Except mobile phone)
+- Support to open multiple font files at the same time.
+- Support to search icon by icon name (glyphName).
+- Support copy all glyph code (JSON format) to clipborad, convenient to your programming.
+- Support change icon color.
+- Support automatic follow-up system language.(English and Chinese)
+- Support multi-platform:
 
 | Android | iOS  |                      WEB                      | MacOS | Windows | Linux |
 | :-----: | :--: | :-------------------------------------------: | :---: | :-----: | :---: |
