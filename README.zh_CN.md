@@ -15,11 +15,10 @@
 
 | Android | iOS  |                      WEB                      | MacOS | Windows | Linux |
 | :-----: | :--: | :-------------------------------------------: | :---: | :-----: | :---: |
-|    ✅    |  ⚠️   | ✅ [Go](https://Joehaivo.github.io/ttf_viewer) |   ✅   |    ✅    |   ⚠️   |
+|    ✅    |  ⚠️   | ✅ [Go](https://Joehaivo.github.io/ttf_viewer) |   ✅   |    ✅    |   ✅   |
 
 > iOS: 由于商店限制较多,上架较为麻烦,暂未考虑,可自行编译运行
->
-> Linux: 后续支持
+
 
 ## 2. 应用截图
 

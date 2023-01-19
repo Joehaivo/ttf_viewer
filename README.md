@@ -15,11 +15,10 @@
 
 | Android | iOS  |                      WEB                      | MacOS | Windows | Linux |
 | :-----: | :--: | :-------------------------------------------: | :---: | :-----: | :---: |
-|    ✅    |  ⚠️   | ✅ [Go](https://Joehaivo.github.io/ttf_viewer) |   ✅   |    ✅    |   ⚠️   |
+|    ✅    |  ⚠️   | ✅ [Go](https://Joehaivo.github.io/ttf_viewer) |   ✅   |    ✅    |   ✅   |
 
 > iOS: Because there are many restrictions on the App Store. You can compile and run it by yourself.
->
-> Linux: to be continue.
+
 
 ## 2. Screenshot
 
