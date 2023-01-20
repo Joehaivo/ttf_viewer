@@ -37,8 +37,8 @@
 
 - Font info/Icon color
 
-  | <img src="./doc/screenshot/image-20230118112553371.png" alt="image-20230118134847227" style="zoom:60%;" /> | <img src="./doc/screenshot/WechatIMG92.jpeg" alt="WechatIMG92" style="zoom:18%;" /> |
-  | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="./doc/screenshot/image-20230118112553371.png" alt="image-20230118134847227" style="zoom:60%;" /> | <img src="./doc/screenshot/WechatIMG92.jpeg" alt="WechatIMG92" style="zoom:18%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
 
   
 
@@ -95,6 +95,8 @@ flutter run -d 22041211AC # Running on the Android device, '22041211ac' comes fr
 flutter build apk --no-tree-shake-icons # Android, product: build/app/outputs/apk/release/app-release.apk
 # flutter build macos --no-tree-shake-icons # macOS, product: build/macos/Build/Products/Release/TTF Viewer.app
 # fluteer build web # web, product: build/web
+# flutter build windows --no-tree-shake-icons # windows 10
+# flutter build linux --no-tree-shake-icons # linux only test for Ubuntu 22.04
 ```
 
 - 5.1 Optional step: package ttf viewer.app into ttf viewer.dmg in macOS platform
