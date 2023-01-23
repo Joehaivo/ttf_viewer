@@ -25,11 +25,21 @@ class TabBodyWidget extends StatefulWidget {
   State<TabBodyWidget> createState() => _TabBodyWidgetState();
 }
 
-class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveClientMixin {
+class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   TextEditingController searchController = TextEditingController();
   List<FontElementVo>? fontElements;
   var isExpanded = false.obs;
   var iconColor = Color(Colors.black.value).obs;
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.fastLinearToSlowEaseIn);
+    super.initState();
+  }
 
   void _searchIcon(String glyphName) {
     var result = <FontElementVo>[];
@@ -96,92 +106,94 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
                   icon: Transform.rotate(
                       angle: isExpanded.isTrue ? pi : 0,
                       child: const Icon(Icons.arrow_drop_down_circle_rounded, size: 24, color: Colors.deepPurple)),
-                  onPressed: () => isExpanded.value = !isExpanded.value,
+                  onPressed: () {
+                    isExpanded.value = !isExpanded.value;
+                    if (isExpanded.isTrue) {
+                      _controller.forward();
+                    } else {
+                      _controller.reset();
+                    }
+                  },
                 );
               }),
             ],
           ),
         ),
-        Obx(() {
-          return Container(
-            child: isExpanded.isTrue
-                ? Column(
-                    children: [
-                      FontInfoWidget(font: widget._font!),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
-                          decoration: const BoxDecoration(
-                              color: Color(0xfff3f3f3), borderRadius: BorderRadius.all(Radius.circular(8))),
-                          child: MediaQuery.removePadding(
-                            context: context,
-                            removeTop: true,
-                            child: Column(
+        SizeTransition(
+            sizeFactor: _animation,
+            axis: Axis.vertical,
+            child: Column(
+              children: [
+                FontInfoWidget(font: widget._font!),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
+                    decoration: const BoxDecoration(
+                        color: Color(0xfff3f3f3), borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 45,
+                            decoration:
+                                const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffececec)))),
+                            child: Row(
                               children: [
-                                Container(
-                                  height: 45,
-                                  decoration:
-                                      const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffececec)))),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 100,
-                                        child: Text(
-                                          I18n.fontSetting.tr,
-                                          style: const TextStyle(fontSize: 18, color: Color(0xff151515)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        I18n.iconColor.tr,
-                                        style: const TextStyle(fontSize: 15, color: Color(0xff151515)),
-                                      ),
-                                      Obx(() {
-                                        return MaterialButton(
-                                            onPressed: () {
-                                              ColorPicker(
-                                                color: iconColor.value,
-                                                onColorChanged: (color) {
-                                                  iconColor.value = color;
-                                                },
-                                                pickersEnabled: const <ColorPickerType, bool>{
-                                                  ColorPickerType.both: false,
-                                                  ColorPickerType.primary: false,
-                                                  ColorPickerType.accent: false,
-                                                  ColorPickerType.bw: false,
-                                                  ColorPickerType.custom: false,
-                                                  ColorPickerType.wheel: true,
-                                                },
-                                                showColorCode: true,
-                                                actionButtons:
-                                                    const ColorPickerActionButtons(dialogActionButtons: false),
-                                              ).showPickerDialog(context);
-                                            },
-                                            color: iconColor.value,
-
-                                            shape: const CircleBorder());
-                                      })
-                                    ],
+                                SizedBox(
+                                  width: 100,
+                                  child: Text(
+                                    I18n.fontSetting.tr,
+                                    style: const TextStyle(fontSize: 18, color: Color(0xff151515)),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  )
-                : null,
-          );
-        }),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  I18n.iconColor.tr,
+                                  style: const TextStyle(fontSize: 15, color: Color(0xff151515)),
+                                ),
+                                Obx(() {
+                                  return MaterialButton(
+                                      onPressed: () {
+                                        ColorPicker(
+                                          color: iconColor.value,
+                                          onColorChanged: (color) {
+                                            iconColor.value = color;
+                                          },
+                                          pickersEnabled: const <ColorPickerType, bool>{
+                                            ColorPickerType.both: false,
+                                            ColorPickerType.primary: false,
+                                            ColorPickerType.accent: false,
+                                            ColorPickerType.bw: false,
+                                            ColorPickerType.custom: false,
+                                            ColorPickerType.wheel: true,
+                                          },
+                                          showColorCode: true,
+                                          actionButtons: const ColorPickerActionButtons(dialogActionButtons: false),
+                                        ).showPickerDialog(context);
+                                      },
+                                      color: iconColor.value,
+                                      shape: const CircleBorder());
+                                })
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )),
         Expanded(
           child: MediaQuery.removePadding(
             context: context,
@@ -245,5 +257,11 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
