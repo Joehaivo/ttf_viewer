@@ -95,6 +95,8 @@ flutter run -d 22041211AC # 运行在Android设备上, 22041211AC来自上一步
 flutter build apk --no-tree-shake-icons # Android, 产物在 build/app/outputs/apk/release/app-release.apk
 # flutter build macos --no-tree-shake-icons # macOS, 产物在 build/macos/Build/Products/Release/TTF Viewer.app
 # fluteer build web # web, 产物在 build/web, 将其web下的内容部署到nginx即可
+# flutter build windows --no-tree-shake-icons # windows 10
+# flutter build linux --no-tree-shake-icons # linux 仅测试Ubuntu 22.04下可用
 ```
 
 - 5.1 *可选步骤*: 在macOS平台将TTF Viewer.app打包成TTF Viewer.dmg
