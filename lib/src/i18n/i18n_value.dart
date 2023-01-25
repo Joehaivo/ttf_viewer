@@ -21,6 +21,8 @@ class I18n {
   static const String fontSetting = "fontSetting";
   static const String iconColor = "iconColor";
   static const String iconSize = "iconSize";
+  static const String codePointType = "codePointType";
+  static const String gridItemSize = "gridItemSize";
 }
 
 class I18nValue extends Translations {
@@ -46,6 +48,8 @@ class I18nValue extends Translations {
           I18n.fontSetting: "设置",
           I18n.iconColor: "图标颜色:",
           I18n.iconSize: "图标大小:",
+          I18n.codePointType: "码点格式:",
+          I18n.gridItemSize: "单元格尺寸:",
         },
         'en_US': {
           I18n.parseFileError: "Parse the file failed, please choose a TrueType font file (.ttf).",
@@ -67,6 +71,8 @@ class I18nValue extends Translations {
           I18n.fontSetting: "Setting",
           I18n.iconColor: "Icon color:",
           I18n.iconSize: "Icon size:",
+          I18n.codePointType: "Code Point format:",
+          I18n.gridItemSize: "Grid item size:",
         }
       };
 }

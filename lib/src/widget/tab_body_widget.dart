@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:substring_highlight/substring_highlight.dart';
+import 'package:ttf_viewer/src/widget/font_setting_widget.dart';
 
 import '../bean/font_element_vo.dart';
 import 'package:get/get.dart';
@@ -29,15 +30,16 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
   TextEditingController searchController = TextEditingController();
   List<FontElementVo>? fontElements;
   var isExpanded = false.obs;
-  var iconColor = Color(Colors.black.value).obs;
 
   late AnimationController _controller;
   late Animation<double> _animation;
+  late FontSettingController _fontSettingController;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
     _animation = CurvedAnimation(parent: _controller, curve: Curves.fastLinearToSlowEaseIn);
+    _fontSettingController = Get.put(FontSettingController(), tag: widget._font.hashCode.toString());
     super.initState();
   }
 
@@ -125,73 +127,7 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
             child: Column(
               children: [
                 FontInfoWidget(font: widget._font!),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 10),
-                    decoration: const BoxDecoration(
-                        color: Color(0xfff3f3f3), borderRadius: BorderRadius.all(Radius.circular(8))),
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 45,
-                            decoration:
-                                const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0xffececec)))),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(
-                                    I18n.fontSetting.tr,
-                                    style: const TextStyle(fontSize: 18, color: Color(0xff151515)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  I18n.iconColor.tr,
-                                  style: const TextStyle(fontSize: 15, color: Color(0xff151515)),
-                                ),
-                                Obx(() {
-                                  return MaterialButton(
-                                      onPressed: () {
-                                        ColorPicker(
-                                          color: iconColor.value,
-                                          onColorChanged: (color) {
-                                            iconColor.value = color;
-                                          },
-                                          pickersEnabled: const <ColorPickerType, bool>{
-                                            ColorPickerType.both: false,
-                                            ColorPickerType.primary: false,
-                                            ColorPickerType.accent: false,
-                                            ColorPickerType.bw: false,
-                                            ColorPickerType.custom: false,
-                                            ColorPickerType.wheel: true,
-                                          },
-                                          showColorCode: true,
-                                          actionButtons: const ColorPickerActionButtons(dialogActionButtons: false),
-                                        ).showPickerDialog(context);
-                                      },
-                                      color: iconColor.value,
-                                      shape: const CircleBorder());
-                                })
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
+                FontSettingWidget(controllerTag: widget._font.hashCode.toString())
               ],
             )),
         Expanded(
@@ -204,52 +140,62 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
                 padding: const EdgeInsets.only(top: 8.0, right: 8, left: 8),
                 child: ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                  child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 130, mainAxisExtent: 130, mainAxisSpacing: 6, crossAxisSpacing: 6),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: fontElements == null ? widget._font?.numGlyphs ?? 0 : fontElements?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xfff3f3f3),
-                            elevation: 0,
-                          ),
-                          onPressed: () {
-                            // todo show dialog with big icon、post
-                          },
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Obx(() {
-                                  return Icon(
-                                      IconData(
-                                          fontElements == null
-                                              ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0
-                                              : fontElements?[index].codePoint ?? 0,
-                                          fontFamily: widget._font?.uniqueFontFamily),
-                                      size: 40,
-                                      color: iconColor.value);
-                                }),
-                                Text(
-                                  "&#${(fontElements == null ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0 : fontElements?[index].codePoint ?? 0).toRadixString(16)};",
-                                  style: TextStyle(color: Color(0xff666666)),
-                                ),
-                                SubstringHighlight(
-                                  text: fontElements == null
-                                      ? widget._font?.post.glyphNames[index] ?? '-'
-                                      : fontElements?[index].glyphName ?? '-',
-                                  term: searchController.text,
-                                  textStyle: TextStyle(
-                                    color: Color(0xff666666),
+                  child: Obx(() {
+                    return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: _fontSettingController.gridItemSize.value,
+                            mainAxisExtent: _fontSettingController.gridItemSize.value + 10,
+                            mainAxisSpacing: 6,
+                            crossAxisSpacing: 6),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: fontElements == null ? widget._font?.numGlyphs ?? 0 : fontElements?.length ?? 0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xfff3f3f3),
+                              elevation: 0,
+                            ),
+                            onPressed: () {
+                              // _showIconDetailDialog(index);
+                            },
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Obx(() {
+                                    return Icon(
+                                        IconData(
+                                            fontElements == null
+                                                ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0
+                                                : fontElements?[index].codePoint ?? 0,
+                                            fontFamily: widget._font?.uniqueFontFamily),
+                                        size: _fontSettingController.gridItemSize.value - 80,
+                                        color: _fontSettingController.iconColor.value);
+                                  }),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: Obx(() {
+                                      return Text(
+                                        "${_fontSettingController.codePointToggleList[0] == true ? '&#x' : 'U+'}${(fontElements == null ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0 : fontElements?[index].codePoint ?? 0).toRadixString(16)}${_fontSettingController.codePointToggleList[0] == true ? ';' : ''}",
+                                        style: const TextStyle(color: Color(0xff666666)),
+                                      );
+                                    }),
                                   ),
-                                  textStyleHighlight: TextStyle(color: Colors.red),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ]),
-                        );
-                      }),
+                                  SubstringHighlight(
+                                    text: fontElements == null
+                                        ? widget._font?.post.glyphNames[index] ?? '-'
+                                        : fontElements?[index].glyphName ?? '-',
+                                    term: searchController.text,
+                                    textStyle: const TextStyle(
+                                      color: Color(0xff666666),
+                                    ),
+                                    textStyleHighlight: const TextStyle(color: Colors.red),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ]),
+                          );
+                        });
+                  }),
                 ),
               ),
             ),
@@ -257,6 +203,40 @@ class _TabBodyWidgetState extends State<TabBodyWidget> with AutomaticKeepAliveCl
         )
       ],
     );
+  }
+
+  void _showIconDetailDialog(int index) {
+    Get.dialog(AlertDialog(
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+                IconData(
+                    fontElements == null
+                        ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0
+                        : fontElements?[index].codePoint ?? 0,
+                    fontFamily: widget._font?.uniqueFontFamily),
+                size: 70,
+                color: _fontSettingController.iconColor.value),
+            Text(
+              "${_fontSettingController.codePointToggleList[0] == true ? '&#x' : 'U+'}${(fontElements == null ? widget._font?.cmap.glyphIndexToCodePointMap[index] ?? 0 : fontElements?[index].codePoint ?? 0).toRadixString(16)}${_fontSettingController.codePointToggleList[0] == true ? ';' : ''}",
+              style: const TextStyle(color: Color(0xff666666)),
+            ),
+            Text(
+              fontElements == null
+                  ? widget._font?.post.glyphNames[index] ?? '-'
+                  : fontElements?[index].glyphName ?? '-',
+              style: const TextStyle(
+                color: Color(0xff666666),
+              ),
+            )
+          ],
+        ),
+      ),
+    ));
   }
 
   @override

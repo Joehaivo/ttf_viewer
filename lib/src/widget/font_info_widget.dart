@@ -17,7 +17,7 @@ class FontInfoWidget extends StatelessWidget {
 
   String getFontJson() {
     try {
-      return jsonEncode(font.getGlyphNameToCodePointMap());
+      return jsonEncode(font.getGlyphNameToCodePointMap().map((key, value) => MapEntry(key, "&#x$value;")));
     } catch (e) {
       e.printError();
     }
